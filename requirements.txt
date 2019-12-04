@@ -1,0 +1,3 @@
+cached-property
+beautifulsoup4
+requests
