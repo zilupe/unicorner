@@ -32,9 +32,9 @@ the concept of **Franchise** - the identity of a group of players playing togeth
 more than one season. Each franchise should be given an ID which is independent from GM IDs.
 These can be maintained in a `franchises.csv` file.
 
-Then, for each season that a franchise joins, we create a separate **Team** object whose ID is constructed
-from GM's season and team IDs by zero-padding them. For example, team identified by GM with `TeamId=23`
-playing in season `SeasonId=101` gets ID: `0101.0023`
+Then, for each season that a franchise joins, we create a separate **Team** object whose ID is a 
+concatenation of zero-padded GM season's ID and team ID. 
+For example, team identified by GM with `TeamId=23` playing in season `SeasonId=101` gets ID `0101.23`
 
 Each such team can have its own name so every season a franchise can use a different name. The mapping
 from teams to franchises is maintained in a `franchise_seasons.csv` file.

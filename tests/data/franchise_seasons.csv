@@ -1,4 +1,4 @@
-season_id,gm_team_id,franchise_id,team_name
+season_id,team_id,franchise_id,name
 55,2716,1,Supernova
 55,3771,2,Upper Street Ballers
 55,3770,3,E=MC SWISH

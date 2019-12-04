@@ -3,6 +3,8 @@ from pathlib import Path
 import pytest
 
 from unicorner import SeasonParse
+from unicorner.dtos import SeasonDto, GameDto
+from unicorner.extraction import create_extraction
 
 
 @pytest.fixture
@@ -12,8 +14,8 @@ def data_dir() -> Path:
 
 def test_parses_season_standings_and_fixtures(data_dir):
     sp = SeasonParse()
-    sp.parse_standings_page(path=data_dir / "standings.html")
-    sp.parse_fixtures_page(path=data_dir / "fixtures.html")
+    sp.parse_standings_page(path=data_dir / "season-114-standings.html")
+    sp.parse_fixtures_page(path=data_dir / "season-114-fixtures.html")
 
     assert sp.season_name == "Spring 2019"
     assert sp.season_id == 114
@@ -21,3 +23,10 @@ def test_parses_season_standings_and_fixtures(data_dir):
     assert sp.division_id == 3568
     assert len(sp.teams) == 8
     assert len(sp.game_days) == 12
+
+
+def test_extraction(data_dir):
+    extraction = create_extraction(input_dir=data_dir)
+    assert len(extraction[SeasonDto]) == 1
+    assert extraction[SeasonDto][0].id == 114
+    assert len(extraction[GameDto]) == 44

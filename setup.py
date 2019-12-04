@@ -6,6 +6,7 @@ with open("README.md") as readme_file:
     readme = readme_file.read()
 
 requirements = [
+    "aarghparse==0.2.0",
     "cached-property",
     "beautifulsoup4",
     "requests",
