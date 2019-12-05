@@ -2,11 +2,15 @@
 
 GM season standings and fixtures parser as a reusable library.
 
+This library can change at any time. Same applies to GM's actual websites. Use at your own risk.
+
 ### Install
 
     pip install unicorner
 
 ### Usage
+
+#### Parsing Standings and Fixtures Pages
 
 Standings page has to parsed before fixtures can be parsed.
 
@@ -16,6 +20,10 @@ Standings page has to parsed before fixtures can be parsed.
     sp.parse_standings_page(path="standings.html")
     sp.parse_fixtures_page(path="fixtures.html")
     print(sp.game_days[0])
+
+#### Extracting to CSV
+
+    python -m unicorner extract_all --help
 
 ### GM Data Model Issues
 
