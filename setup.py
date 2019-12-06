@@ -6,7 +6,7 @@ with open("README.md") as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    "aarghparse==version='0.2.1'",
+    "aarghparse==0.2.1",
     "cached-property",
     "beautifulsoup4",
     "requests",
@@ -41,6 +41,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/zilupe/unicorner",
-    version="version='0.2.1'",
+    version="0.2.1",
     zip_safe=False,
 )
