@@ -112,7 +112,7 @@ def write_extraction(extraction: Dict[Type[DtoMixin], List[DtoMixin]], output_di
     for dto_cls, dtos in extraction.items():
         output_path = output_dir / f"gm{dto_cls.__name__.lower()[:-3]}s.csv"
         with output_path.open("w") as f:
-            csv_writer = csv.DictWriter(f, fieldnames=dto_cls.get_field_names())
+            csv_writer = csv.DictWriter(f, fieldnames=dto_cls.get_field_names(), quoting=csv.QUOTE_ALL)
             csv_writer.writeheader()
             csv_writer.writerows(dto.to_dict() for dto in dtos)
         log.info(f"{len(dtos)} {dto_cls.__name__}s written to {output_path}")
