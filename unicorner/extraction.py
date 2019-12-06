@@ -62,7 +62,10 @@ def create_extraction(input_dir: Path) -> Dict[Type[DtoMixin], List[DtoMixin]]:
     franchises_path = input_dir / "franchises.csv"
     if franchises_path.exists():
         with franchises_path.open() as f:
-            extraction[FranchiseDto] = [FranchiseDto(franchise) for franchise in csv.DictReader(f)]
+            extraction[FranchiseDto] = [
+                FranchiseDto(**row)
+                for row in csv.DictReader(f)
+            ]
 
     franchise_seasons_path = input_dir / "franchise_seasons.csv"
     if franchise_seasons_path.exists():

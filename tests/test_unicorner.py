@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from unicorner import SeasonParse
-from unicorner.dtos import SeasonDto, GameDto
+from unicorner.dtos import FranchiseDto, GameDto, SeasonDto
 from unicorner.extraction import create_extraction
 
 
@@ -30,3 +30,6 @@ def test_extraction(data_dir):
     assert len(extraction[SeasonDto]) == 1
     assert extraction[SeasonDto][0].id == 114
     assert len(extraction[GameDto]) == 44
+
+    assert isinstance(extraction[FranchiseDto][0], FranchiseDto)
+    assert extraction[FranchiseDto][0].name == "Supernova"
