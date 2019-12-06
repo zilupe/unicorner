@@ -1,6 +1,6 @@
 __author__ = """Jazeps Basko"""
 __email__ = "jazeps.basko@gmail.com"
-__version__ = "0.2.4"
+__version__ = "0.3.0"
 
 from .env import UnicornerEnv
 from .season_page import SeasonParse
