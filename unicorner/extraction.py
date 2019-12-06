@@ -8,7 +8,7 @@ from typing import Dict, Generator, List, Type
 
 from unicorner import SeasonParse
 from unicorner.dtos import DtoMixin, FranchiseDto, GameDto, SeasonDto, TeamDto
-from unicorner.env import get_logger, UnicornerEnv
+from unicorner.env import UnicornerEnv, get_logger
 
 log = get_logger(__name__)
 
