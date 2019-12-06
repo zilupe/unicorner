@@ -8,12 +8,12 @@ from typing import Dict, Generator, List, Type
 
 from unicorner import SeasonParse
 from unicorner.dtos import DtoMixin, FranchiseDto, GameDto, SeasonDto, TeamDto
-from unicorner.env import get_logger
+from unicorner.env import get_logger, UnicornerEnv
 
 log = get_logger(__name__)
 
 
-def parse_seasons(input_dir: Path) -> Generator[SeasonParse, None, None]:
+def parse_seasons(input_dir: Path, env: UnicornerEnv = None) -> Generator[SeasonParse, None, None]:
     seasons: Dict[int, SeasonParse] = {}
 
     # Standings should be parsed before fixtures in order to get the teams list first
@@ -29,7 +29,7 @@ def parse_seasons(input_dir: Path) -> Generator[SeasonParse, None, None]:
         gm_season_id = int(parts[1])
         is_fixtures = parts[2] == "fixtures.html"
         if gm_season_id not in seasons:
-            seasons[gm_season_id] = SeasonParse()
+            seasons[gm_season_id] = SeasonParse(env=env)
 
         if is_fixtures:
             seasons[gm_season_id].parse_fixtures_page(html=item.read_text())
@@ -44,6 +44,7 @@ def create_extraction(input_dir: Path) -> Dict[Type[DtoMixin], List[DtoMixin]]:
     This expects the following files to be present in input_dir:
         franchises.csv
         franchise_seasons.csv
+        score_overrides.csv
         season-SEASONID-fixtures.html
         season-SEASONID-standings.html
 
@@ -58,6 +59,23 @@ def create_extraction(input_dir: Path) -> Dict[Type[DtoMixin], List[DtoMixin]]:
     season_dto: SeasonDto
 
     extraction: Dict[Type[DtoMixin], List[DtoMixin]] = collections.defaultdict(list)
+
+    score_overrides_path = input_dir / "score_overrides.csv"
+    score_overrides = {}
+    if score_overrides_path.exists():
+        with score_overrides_path.open() as f:
+            for row in csv.DictReader(f):
+                game_id = int(row['game_id'])
+                score_overrides[game_id] = {
+                    "game_id": game_id,
+                    "home_team_id": int(row["home_team_id"] or 0),
+                    "home_team_score": int(row["home_team_score"]),
+                    "away_team_id": int(row["away_team_id"] or 0),
+                    "away_team_score": int(row["away_team_score"]),
+                    "score_status": int(row["score_status"]),
+                    "score_status_comments": row["score_status_comments"],
+                    "season_stage": row["season_stage"] or None,
+                }
 
     franchises_path = input_dir / "franchises.csv"
     if franchises_path.exists():
@@ -78,7 +96,10 @@ def create_extraction(input_dir: Path) -> Dict[Type[DtoMixin], List[DtoMixin]]:
                     name=fs["name"],
                 ))
 
-    for season in parse_seasons(input_dir=input_dir):
+    env = UnicornerEnv()
+    env.score_overrides = score_overrides
+
+    for season in parse_seasons(input_dir=input_dir, env=env):
         game_days = sorted(season.game_days, key=lambda gd: gd.date)
         extraction[SeasonDto].append(SeasonDto(
             id=season.season_id,

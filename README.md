@@ -48,3 +48,9 @@ Each such team can have its own name so every season a franchise can use a diffe
 from teams to franchises is maintained in a `franchise_seasons.csv` file.
 
 Examples of both files can be found under `tests/data/`
+
+### GM Data Issues
+
+GM data is very much like their operations. Sometimes there's no score or the score is incorrect, the winner
+is wrong, or the game is marked incorrectly say as a final when it isn't a final etc. etc. To fix these issues
+use `score_overrides.csv` file.
