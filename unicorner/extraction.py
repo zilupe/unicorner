@@ -76,6 +76,9 @@ def create_extraction(input_dir: Path) -> Dict[Type[DtoMixin], List[DtoMixin]]:
                     "score_status_comments": row["score_status_comments"],
                     "season_stage": row["season_stage"] or None,
                 }
+        log.info(f"{len(score_overrides)} score overrides loaded from {score_overrides_path}")
+    else:
+        log.info(f"No score overrides loaded")
 
     franchises_path = input_dir / "franchises.csv"
     if franchises_path.exists():
