@@ -118,6 +118,7 @@ def create_extraction(input_dir: Path) -> Dict[Type[DtoMixin], List[DtoMixin]]:
                 extraction[GameDto].append(GameDto(
                     id=g.id,
                     scheduled_time=g.starts_at,
+                    season_id=season.season_id,
                     season_stage=g.season_stage,
                     home_team_id=g.home_team_id,
                     home_team_pts=g.home_team_score,

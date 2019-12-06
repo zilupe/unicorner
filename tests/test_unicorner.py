@@ -29,7 +29,9 @@ def test_extraction(data_dir):
     extraction = create_extraction(input_dir=data_dir)
     assert len(extraction[SeasonDto]) == 1
     assert extraction[SeasonDto][0].id == 114
+
     assert len(extraction[GameDto]) == 44
+    assert extraction[GameDto][0].season_id == 114
 
     assert isinstance(extraction[FranchiseDto][0], FranchiseDto)
     assert extraction[FranchiseDto][0].name == "Supernova"
