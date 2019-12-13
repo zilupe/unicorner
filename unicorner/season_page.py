@@ -285,6 +285,11 @@ class SeasonParse:
             week_date = parse_gm_date(ft.find('tr', class_='FHeader').find('td').text.strip())
             week_games = []
 
+            game_day = None
+            matching_game_days = [gd for gd in self.game_days if gd.date == week_date]
+            if matching_game_days:
+                game_day = matching_game_days[0]
+
             for fr in ft.find_all('tr', class_='FRow'):
                 game_time_cell = fr.find('td', class_='FDate')
                 if not game_time_cell:
@@ -313,18 +318,32 @@ class SeasonParse:
                 game_home_team_id = None
                 game_away_team_id = None
 
-                game = Game(
-                    id=game_id,
-                    starts_at=game_time,
-                    season_stage=SeasonStages.regular,
-                    venue=game_venue,
-                    home_team_id=self.unicorn_team_id(game_home_team_id or extract_from_link(htc.find('a'), 'TeamId')),
-                    away_team_id=self.unicorn_team_id(game_away_team_id or extract_from_link(atc.find('a'), 'TeamId')),
-                )
+                game = None
+                if game_day:
+                    matching_games = [g for g in game_day.games if g.id == game_id]
+                    if matching_games:
+                        # Do not register a duplicate, the game is already known probably due to the standings page.
+                        log.warning(
+                            f"Discarding game {game_id} ({game_time}) from fixtures page, "
+                            f"the game is already present in the GameDay (probably from standings page)."
+                        )
+                        continue
+                    game = matching_games[0]
+
+                if not game:
+                    game = Game(
+                        id=game_id,
+                        starts_at=game_time,
+                        season_stage=SeasonStages.regular,
+                        venue=game_venue,
+                        home_team_id=self.unicorn_team_id(game_home_team_id or extract_from_link(htc.find('a'), 'TeamId')),
+                        away_team_id=self.unicorn_team_id(game_away_team_id or extract_from_link(atc.find('a'), 'TeamId')),
+                    )
 
                 week_games.append(game)
 
-            self.game_days.append(GameDay(
-                date=week_date,
-                games=week_games,
-            ))
+            if not game_day:
+                self.game_days.append(GameDay(
+                    date=week_date,
+                    games=week_games,
+                ))
