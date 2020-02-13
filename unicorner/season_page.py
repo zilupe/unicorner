@@ -1,6 +1,7 @@
 import dataclasses
 import datetime as dt
 import logging
+import re
 from pathlib import Path
 from typing import Dict, List
 from urllib.parse import parse_qs
@@ -106,7 +107,8 @@ class SeasonParse:
             self.league_id = int(extract_from_link(fixtures_link, 'LeagueId'))
 
         self.teams = {}
-        for i, st_tr in enumerate(soup.find('table', class_='STTable').find_all('tr', class_='STRow')):
+        team_row_regex = re.compile("STRow.*")
+        for i, st_tr in enumerate(soup.find('table', class_='STTable').find_all('tr', class_=team_row_regex)):
             gm_team_id = int(extract_from_link(st_tr.find('td', class_='STTeamCell').find('a'), 'TeamId'))
             team_id = self.unicorn_team_id(gm_team_id)
             tds = st_tr.find_all('td')

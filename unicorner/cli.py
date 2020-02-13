@@ -1,8 +1,10 @@
 import logging
 from pathlib import Path
+from pprint import pprint
 
 import aarghparse
 
+from unicorner import UnicornerEnv, SeasonParse
 from unicorner.extraction import extract_all
 
 
@@ -30,6 +32,15 @@ def cli(parser, subcommand):
         assert output_dir.exists()
 
         extract_all(input_dir=input_dir, output_dir=output_dir)
+
+    @subcommand(name="parse_standings_page", args=[
+        ["path",],
+    ])
+    def cmd_parse_standings_page(args):
+        env = UnicornerEnv()
+        season = SeasonParse(env=env)
+        season.parse_standings_page(path=args.path)
+        pprint(season.__dict__)
 
 
 def main():
